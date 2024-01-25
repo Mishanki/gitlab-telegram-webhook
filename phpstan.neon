@@ -1,0 +1,21 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - app/
+
+    # Level 9 is the highest level
+    level: 5
+    ignoreErrors:
+        - '#Method .+::(data|provide).*\(\) is unused\.#'
+        - '(::allowedSorts)'
+
+    excludePaths:
+        - ./*/*/FileToBeExcluded.php
+        - app/Http/Resources
+        - vendor/spatie/laravel-query-builder/src
+        - storage/
+
+    checkMissingIterableValueType: false
