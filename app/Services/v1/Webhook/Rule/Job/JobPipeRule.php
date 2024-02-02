@@ -38,6 +38,7 @@ class JobPipeRule
             $pipeShortBody ??= $pipe->short_body ?? [];
             $shortBody = $service->pipelineService->updateData($pipeShortBody, $data, ['icon', 'status', 'duration', 'queued_duration']);
             $editTpl = $service->pipelineService->getTemplate($shortBody);
+
             $response = $service->http->editMessage($entity->getChatId(), $pipe->message_id, $editTpl);
         }
 

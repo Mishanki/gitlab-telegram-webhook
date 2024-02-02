@@ -31,20 +31,22 @@ class JobService implements WebhookFactoryInterface
     /**
      * @param SendEntity $entity
      *
-     * @return array
+     * @return null|array
      */
-    public function send(SendEntity $entity): array
+    public function send(SendEntity $entity): ?array
     {
         $data = $this->getData($entity->getBody());
         $shaHash = $this->getHash($entity->getBody());
         $tpl = $this->getTemplate($data);
 
-        $response = $this->ruleWork([
+        if(!$response = $this->ruleWork([
             JobRule::class,
             JobPushRule::class,
             JobPipeRule::class,
             JobPushPipeRule::class,
-        ], $entity);
+        ], $entity)) {
+            return null;
+        }
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),
@@ -76,12 +78,15 @@ class JobService implements WebhookFactoryInterface
     public function getData(array $body): array
     {
         return [
-            'build_id' => $body['build_id'],
-            'icon' => IconHelper::ICONS[$body['build_status']] ?? null,
-            'name' => $body['build_name'],
-            'status' => $body['build_status'],
-            'duration' => $body['build_duration'],
-            'queued_duration' => $body['build_queued_duration'],
+            'item' => [
+                'build_id' => $body['build_id'],
+                'url' => $body['project']['web_url'].'/builds/'.$body['build_id'],
+                'icon' => IconHelper::ICONS[$body['build_status']] ?? null,
+                'name' => $body['build_name'],
+                'status' => $body['build_status'],
+                'duration' => $body['build_duration'],
+                'queued_duration' => $body['build_queued_duration'],
+            ],
         ];
     }
 

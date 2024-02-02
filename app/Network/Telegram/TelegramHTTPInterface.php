@@ -6,7 +6,7 @@ use Illuminate\Http\Client\Response;
 
 interface TelegramHTTPInterface
 {
-    public function getUpdates(): Response;
+    public function getUpdates(?int $chatId = null): Response;
 
     public function sendMessage(int $chatId, string $text): Response;
 

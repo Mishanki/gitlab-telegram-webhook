@@ -12,7 +12,7 @@ class GetUpdateAction extends BaseController
     public function __invoke(): JsonResponse
     {
         return response()->json([
-            'data' => $this->webhookService->getUpdates(),
+            'data' => $this->http->getUpdates(),
         ])
             ->setEncodingOptions(JSON_UNESCAPED_UNICODE)
         ;

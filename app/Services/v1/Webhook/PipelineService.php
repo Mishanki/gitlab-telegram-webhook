@@ -27,18 +27,20 @@ class PipelineService implements WebhookFactoryInterface
     /**
      * @param SendEntity $entity
      *
-     * @return array
+     * @return null|array
      */
-    public function send(SendEntity $entity): array
+    public function send(SendEntity $entity): ?array
     {
         $data = $this->getData($entity->getBody());
         $sendTpl = $this->getTemplate($data);
         $shaHash = $this->getHash($entity->getBody());
 
-        $response = $this->ruleWork([
+        if(!$response = $this->ruleWork([
             PipelineRule::class,
             PipelinePushRule::class,
-        ], $entity);
+        ], $entity)) {
+            return null;
+        }
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),
@@ -129,10 +131,10 @@ class PipelineService implements WebhookFactoryInterface
             return $data;
         }
 
-        $id = $update['build_id'];
+        $id = $update['item']['build_id'];
         foreach ($data['message'][$id] as $k => $item) {
             if (\in_array($k, $updKeys, true)) {
-                $data['message'][$id][$k] = $update[$k];
+                $data['message'][$id][$k] = $update['item'][$k];
             }
         }
 

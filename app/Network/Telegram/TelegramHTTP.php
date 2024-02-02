@@ -24,12 +24,16 @@ class TelegramHTTP implements TelegramHTTPInterface
     }
 
     /**
+     * @param null|int $chatId
+     *
      * @return Response
      */
-    public function getUpdates(): Response
+    public function getUpdates(?int $chatId = null): Response
     {
         return Http::timeout($this->httpTimeout)
-            ->post($this->url.'/getUpdates')
+            ->post($this->url.'/getUpdates', array_filter([
+                'chat_id' => $chatId,
+            ]))
         ;
     }
 

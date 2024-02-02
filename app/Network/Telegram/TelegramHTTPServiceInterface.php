@@ -8,5 +8,5 @@ interface TelegramHTTPServiceInterface
 
     public function editMessage(int $chatId, int $messageId, string $text): ?array;
 
-    public function getUpdates(): array;
+    public function getUpdates(?int $chatId = null): array;
 }

@@ -24,12 +24,17 @@ class JobRule
         $data = $service->getData($entity->getBody());
         $shaHash = $service->getHash($entity->getBody());
 
+        $job = $service->hookRepository->findOneByEventSha(HookEnum::HOOK_JOB->value, $shaHash);
         $push = $service->hookRepository->findOneByEventSha(HookEnum::HOOK_PUSH->value, $shaHash);
         $pipe = $service->hookRepository->findOneByEventSha(HookEnum::HOOK_PIPELINE->value, $shaHash, $push->message_id ?? null);
 
-        if (!$push && !$pipe) {
+        if (!$push && !$pipe && !$job) {
             $sendTpl = $service->getTemplate($data);
             $response = $service->http->sendMessage($entity->getChatId(), $sendTpl);
+        }
+        if (!$push && !$pipe && $job) {
+            $sendTpl = $service->getTemplate($data);
+            $response = $service->http->editMessage($entity->getChatId(), $job->message_id, $sendTpl);
         }
 
         return $response ?? null;

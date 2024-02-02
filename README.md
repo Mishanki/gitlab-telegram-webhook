@@ -26,4 +26,10 @@ TELEGRAM_HASH_CHAT_IDS="hash:chat_id;hash_2:chat_id_2"
 ### Docker
 ```dockerfile
 docker-compose up -d
+docker exec -it gitlab-notification-app composer install
+```
+
+### Database
+```bash
+docker exec -it gitlab-notification-app php artisan migrate
 ```

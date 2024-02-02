@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\v1\Action\Native;
 
 use App\Http\Controllers\Controller;
-use App\Services\v1\Webhook\WebhookService;
+use App\Network\Telegram\TelegramHTTPServiceInterface;
 
 class BaseController extends Controller
 {
     /**
-     * @param WebhookService $webhookService
+     * @param TelegramHTTPServiceInterface $http
      */
     public function __construct(
-        public WebhookService $webhookService,
+        public TelegramHTTPServiceInterface $http,
     ) {}
 }

@@ -9,9 +9,9 @@ interface WebhookFactoryInterface
     /**
      * @param SendEntity $entity
      *
-     * @return array
+     * @return null|array
      */
-    public function send(SendEntity $entity): array;
+    public function send(SendEntity $entity): ?array;
 
     /**
      * @param array $body

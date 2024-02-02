@@ -25,17 +25,19 @@ class PushService implements WebhookFactoryInterface
     /**
      * @param SendEntity $entity
      *
-     * @return array
+     * @return null|array
      */
-    public function send(SendEntity $entity): array
+    public function send(SendEntity $entity): ?array
     {
         $data = $this->getData($entity->getBody());
         $shaHash = $this->getHash($entity->getBody());
         $tpl = $this->getTemplate($data);
 
-        $response = $this->ruleWork([
+        if(!$response = $this->ruleWork([
             PushRule::class,
-        ], $entity);
+        ], $entity)) {
+            return null;
+        }
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),
