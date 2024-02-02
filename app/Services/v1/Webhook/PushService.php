@@ -33,11 +33,9 @@ class PushService implements WebhookFactoryInterface
         $shaHash = $this->getHash($entity->getBody());
         $tpl = $this->getTemplate($data);
 
-        if(!$response = $this->ruleWork([
+        $response = $this->ruleWork([
             PushRule::class,
-        ], $entity)) {
-            return null;
-        }
+        ], $entity);
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),

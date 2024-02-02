@@ -37,16 +37,9 @@ class TelegramHTTPService implements TelegramHTTPServiceInterface
      * @param string $text
      *
      * @return null|array
-     * @throws InvalidArgumentException
      */
     public function editMessage(int $chatId, int $messageId, string $text): ?array
     {
-        $msg = \Cache::get($chatId.'_'.$messageId);
-        if ($msg == $text) {
-            return null;
-        }
-        \Cache::set($chatId.'_'.$messageId, $text, 60 * 5);
-
         $response = $this->http->editMessage($chatId, $messageId, $text)->json();
         if (!($response['ok'] ?? false)) {
             throw new ApplicationException('Telegram response error: '.$response['description'] ?? null, Errors::TELEGRAM_RESPONSE_ERROR->value);

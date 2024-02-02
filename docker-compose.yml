@@ -31,4 +31,19 @@ services:
     container_name: gitlab-notification-app
     volumes:
       - ./:/var/www
+    depends_on:
+        - db
+    links:
+        - db
     working_dir: /var/www
+  db:
+    build:
+      context: .
+      dockerfile: _docker/local/db/Dockerfile
+    container_name: gitlab-notification-db
+    volumes:
+      - ./tmp/postgresql_gitlab_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 15512:5432

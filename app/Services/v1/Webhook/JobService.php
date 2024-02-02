@@ -39,17 +39,16 @@ class JobService implements WebhookFactoryInterface
         $shaHash = $this->getHash($entity->getBody());
         $tpl = $this->getTemplate($data);
 
-        if(!$response = $this->ruleWork([
+        $response = $this->ruleWork([
             JobRule::class,
             JobPushRule::class,
             JobPipeRule::class,
             JobPushPipeRule::class,
-        ], $entity)) {
-            return null;
-        }
+        ], $entity);
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),
+            'event_id' => $data['item']['build_id'] ?? null,
             'hash' => $shaHash,
             'body' => $entity->getBody(),
             'short_body' => $data,

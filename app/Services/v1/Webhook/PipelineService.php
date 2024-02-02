@@ -35,12 +35,10 @@ class PipelineService implements WebhookFactoryInterface
         $sendTpl = $this->getTemplate($data);
         $shaHash = $this->getHash($entity->getBody());
 
-        if(!$response = $this->ruleWork([
+        $response = $this->ruleWork([
             PipelineRule::class,
             PipelinePushRule::class,
-        ], $entity)) {
-            return null;
-        }
+        ], $entity);
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),
