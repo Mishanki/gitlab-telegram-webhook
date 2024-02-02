@@ -6,6 +6,8 @@ use App\Network\Telegram\TelegramHTTPServiceInterface;
 use App\Repositories\HookRepositoryInterface;
 use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\Factory\WebhookFactoryInterface;
+use App\Services\v1\Webhook\Rule\Push\PushRule;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 class PushService implements WebhookFactoryInterface
 {
@@ -22,6 +24,8 @@ class PushService implements WebhookFactoryInterface
      * @param SendEntity $entity
      *
      * @return array
+     *
+     * @throws BindingResolutionException
      */
     public function send(SendEntity $entity): array
     {
@@ -29,7 +33,7 @@ class PushService implements WebhookFactoryInterface
         $shaHash = $this->getHash($entity->getBody());
         $tpl = $this->getTemplate($data);
 
-        $response = $this->http->sendMessage($entity->getChatId(), $tpl);
+        $response = PushRule::rule($entity);
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),

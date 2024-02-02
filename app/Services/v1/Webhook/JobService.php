@@ -3,11 +3,15 @@
 namespace App\Services\v1\Webhook;
 
 use App\Helper\IconHelper;
-use App\Models\Hook\Enum\HookEnum;
 use App\Network\Telegram\TelegramHTTPServiceInterface;
 use App\Repositories\HookRepositoryInterface;
 use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\Factory\WebhookFactoryInterface;
+use App\Services\v1\Webhook\Rule\Job\JobPipeRule;
+use App\Services\v1\Webhook\Rule\Job\JobPushPipeRule;
+use App\Services\v1\Webhook\Rule\Job\JobPushRule;
+use App\Services\v1\Webhook\Rule\Job\JobRule;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 class JobService implements WebhookFactoryInterface
 {
@@ -26,6 +30,8 @@ class JobService implements WebhookFactoryInterface
      * @param SendEntity $entity
      *
      * @return array
+     *
+     * @throws BindingResolutionException
      */
     public function send(SendEntity $entity): array
     {
@@ -33,27 +39,10 @@ class JobService implements WebhookFactoryInterface
         $shaHash = $this->getHash($entity->getBody());
         $tpl = $this->getTemplate($data);
 
-        $push = $this->hookRepository->findOneByEventSha(HookEnum::HOOK_PUSH->value, $shaHash);
-        $pipe = $this->hookRepository->findOneByEventSha(HookEnum::HOOK_PIPELINE->value, $shaHash);
-        $job = $this->hookRepository->findAllByEventSha(HookEnum::HOOK_JOB->value, $shaHash);
-
-        $response = [];
-        if (!$push && !$pipe) {
-            $response = $this->http->sendMessage($entity->getChatId(), $tpl);
-        }
-        if ($push && !$pipe) {
-            $editTpl = $this->getTemplate($data, $push->render);
-            $response = $this->http->editMessage($entity->getChatId(), $push->message_id, $editTpl);
-        }
-        if ($push && $pipe) {
-            foreach ($job ?? [] as $jobItem) {
-                $pipe->short_body = $this->pipelineService->updateData((array) ($pipe->short_body ?? []), $jobItem->short_body ?? [], ['icon', 'status', 'duration', 'queued_duration']);
-            }
-
-            $shortBody = $this->pipelineService->updateData($pipe->short_body ?? [], $data, ['icon', 'status', 'duration', 'queued_duration']);
-            $editTpl = $this->pipelineService->getTemplate($shortBody, $push->render);
-            $response = $this->http->editMessage($entity->getChatId(), $push->message_id, $editTpl);
-        }
+        $response = JobRule::rule($entity, null);
+        $response = JobPushRule::rule($entity, $response);
+        $response = JobPipeRule::rule($entity, $response);
+        $response = JobPushPipeRule::rule($entity, $response);
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),

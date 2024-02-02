@@ -3,11 +3,13 @@
 namespace App\Services\v1\Webhook;
 
 use App\Helper\IconHelper;
-use App\Models\Hook\Enum\HookEnum;
 use App\Network\Telegram\TelegramHTTPServiceInterface;
 use App\Repositories\HookRepositoryInterface;
 use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\Factory\WebhookFactoryInterface;
+use App\Services\v1\Webhook\Rule\Pipeline\PipelinePushRule;
+use App\Services\v1\Webhook\Rule\Pipeline\PipelineRule;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 class PipelineService implements WebhookFactoryInterface
 {
@@ -24,21 +26,17 @@ class PipelineService implements WebhookFactoryInterface
      * @param SendEntity $entity
      *
      * @return array
+     *
+     * @throws BindingResolutionException
      */
     public function send(SendEntity $entity): array
     {
         $data = $this->getData($entity->getBody());
         $sendTpl = $this->getTemplate($data);
         $shaHash = $this->getHash($entity->getBody());
-        if (!$push = $this->hookRepository->findOneByEventSha(HookEnum::HOOK_PUSH->value, $shaHash)) {
-            $response = $this->http->sendMessage($entity->getChatId(), $sendTpl);
-        } else {
-            $editTpl = $this->getTemplate($data, $push->render);
-            //            echo '<pre>';
-            //            print_r($editTpl); die();
-            //            echo '</pre>';
-            $response = $this->http->editMessage($entity->getChatId(), $push->message_id, $editTpl);
-        }
+
+        $response = PipelinePushRule::rule($entity, null);
+        $response = PipelineRule::rule($entity, $response);
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),
