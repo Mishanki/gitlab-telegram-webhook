@@ -9,12 +9,10 @@ RUN apt-get update && apt-get install -y \
     zip unzip \
     git && \
     docker-php-ext-install pdo_pgsql && \
-    docker-php-ext-install pdo_mysql && \
     docker-php-ext-install bcmath && \
     docker-php-ext-install gd && \
     docker-php-ext-install zip && \
     docker-php-ext-install sockets && \
-    docker-php-ext-configure calendar && docker-php-ext-install calendar && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     # xdebug
@@ -40,17 +38,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin
 # alias
 RUN echo "alias a='artisan'" >> /root/.bashrc
-
-# simplexml
-RUN apt-get update && apt-get install -y libxml2-dev && \
-    apt-get clean && \
-    docker-php-ext-install simplexml && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/
-
-# Imagick extension
-# RUN apt-get update && apt-get install -y libmagickwand-dev && \
-#    pecl install imagick && \
-#    docker-php-ext-enable imagick
 
 WORKDIR /var/www
 

@@ -3,7 +3,7 @@ services:
   redisnotif:
     image: redis:latest
     ports:
-     - 6479:6379
+     - "6479:6379"
     volumes:
      - $PWD/redis-data:/var/lib/redis
      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
@@ -12,7 +12,7 @@ services:
     image: nginx:latest
     container_name: gitlab-notification-nginx
     ports:
-      - 15511:80
+      - ${APP_HTTP_PORT:-3000}:80
     volumes:
       - ./:/var/www
       - ./tmp/nginx/logs:/var/log/nginx
@@ -30,8 +30,4 @@ services:
     container_name: gitlab-notification-app
     volumes:
       - ./:/var/www
-    depends_on:
-      - db
-    links:
-      - db
     working_dir: /var/www
