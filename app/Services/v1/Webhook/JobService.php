@@ -11,10 +11,12 @@ use App\Services\v1\Webhook\Rule\Job\JobPipeRule;
 use App\Services\v1\Webhook\Rule\Job\JobPushPipeRule;
 use App\Services\v1\Webhook\Rule\Job\JobPushRule;
 use App\Services\v1\Webhook\Rule\Job\JobRule;
-use Illuminate\Contracts\Container\BindingResolutionException;
+use App\Services\v1\Webhook\Trait\RuleTrait;
 
 class JobService implements WebhookFactoryInterface
 {
+    use RuleTrait;
+
     /**
      * @param TelegramHTTPServiceInterface $http
      * @param HookRepositoryInterface $hookRepository
@@ -30,8 +32,6 @@ class JobService implements WebhookFactoryInterface
      * @param SendEntity $entity
      *
      * @return array
-     *
-     * @throws BindingResolutionException
      */
     public function send(SendEntity $entity): array
     {
@@ -39,10 +39,12 @@ class JobService implements WebhookFactoryInterface
         $shaHash = $this->getHash($entity->getBody());
         $tpl = $this->getTemplate($data);
 
-        $response = JobRule::rule($entity, null);
-        $response = JobPushRule::rule($entity, $response);
-        $response = JobPipeRule::rule($entity, $response);
-        $response = JobPushPipeRule::rule($entity, $response);
+        $response = $this->ruleWork([
+            JobRule::class,
+            JobPushRule::class,
+            JobPipeRule::class,
+            JobPushPipeRule::class,
+        ], $entity);
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),

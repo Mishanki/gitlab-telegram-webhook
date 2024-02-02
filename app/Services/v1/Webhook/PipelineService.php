@@ -9,10 +9,12 @@ use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\Factory\WebhookFactoryInterface;
 use App\Services\v1\Webhook\Rule\Pipeline\PipelinePushRule;
 use App\Services\v1\Webhook\Rule\Pipeline\PipelineRule;
-use Illuminate\Contracts\Container\BindingResolutionException;
+use App\Services\v1\Webhook\Trait\RuleTrait;
 
 class PipelineService implements WebhookFactoryInterface
 {
+    use RuleTrait;
+
     /**
      * @param TelegramHTTPServiceInterface $http
      * @param HookRepositoryInterface $hookRepository
@@ -26,8 +28,6 @@ class PipelineService implements WebhookFactoryInterface
      * @param SendEntity $entity
      *
      * @return array
-     *
-     * @throws BindingResolutionException
      */
     public function send(SendEntity $entity): array
     {
@@ -35,8 +35,10 @@ class PipelineService implements WebhookFactoryInterface
         $sendTpl = $this->getTemplate($data);
         $shaHash = $this->getHash($entity->getBody());
 
-        $response = PipelinePushRule::rule($entity, null);
-        $response = PipelineRule::rule($entity, $response);
+        $response = $this->ruleWork([
+            PipelineRule::class,
+            PipelinePushRule::class,
+        ], $entity);
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),

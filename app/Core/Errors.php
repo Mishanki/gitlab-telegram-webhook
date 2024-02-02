@@ -57,6 +57,8 @@ enum Errors: int
 
     case TELEGRAM_RESPONSE_ERROR = 9001;
 
+    case TELEGRAM_RULE_DUBLICATE_ERROR = 9002;
+
     /**
      * @return string
      *

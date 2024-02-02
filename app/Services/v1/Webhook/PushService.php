@@ -7,10 +7,12 @@ use App\Repositories\HookRepositoryInterface;
 use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\Factory\WebhookFactoryInterface;
 use App\Services\v1\Webhook\Rule\Push\PushRule;
-use Illuminate\Contracts\Container\BindingResolutionException;
+use App\Services\v1\Webhook\Trait\RuleTrait;
 
 class PushService implements WebhookFactoryInterface
 {
+    use RuleTrait;
+
     /**
      * @param TelegramHTTPServiceInterface $http
      * @param HookRepositoryInterface $hookRepository
@@ -24,8 +26,6 @@ class PushService implements WebhookFactoryInterface
      * @param SendEntity $entity
      *
      * @return array
-     *
-     * @throws BindingResolutionException
      */
     public function send(SendEntity $entity): array
     {
@@ -33,7 +33,9 @@ class PushService implements WebhookFactoryInterface
         $shaHash = $this->getHash($entity->getBody());
         $tpl = $this->getTemplate($data);
 
-        $response = PushRule::rule($entity);
+        $response = $this->ruleWork([
+            PushRule::class,
+        ], $entity);
 
         $this->hookRepository->store([
             'event' => $entity->getHook(),

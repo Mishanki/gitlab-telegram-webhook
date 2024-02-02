@@ -19,6 +19,10 @@ class PipelineRule
      */
     public static function rule(SendEntity $entity, ?array $response = null): ?array
     {
+        if ($response) {
+            return $response;
+        }
+
         /* @var $service PipelineService */
         $service = app()->make(PipelineService::class);
         $shaHash = $service->getHash($entity->getBody());

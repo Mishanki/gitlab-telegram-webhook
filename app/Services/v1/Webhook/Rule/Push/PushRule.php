@@ -18,6 +18,10 @@ class PushRule
      */
     public static function rule(SendEntity $entity, ?array $response = null): ?array
     {
+        if ($response) {
+            return $response;
+        }
+
         /* @var $service PushService */
         $service = app()->make(PushService::class);
         $data = $service->getData($entity->getBody());

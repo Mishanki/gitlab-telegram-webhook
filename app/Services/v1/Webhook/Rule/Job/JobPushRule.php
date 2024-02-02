@@ -19,6 +19,10 @@ class JobPushRule
      */
     public static function rule(SendEntity $entity, ?array $response = null): ?array
     {
+        if ($response) {
+            return $response;
+        }
+
         /* @var $service JobService */
         $service = app()->make(JobService::class);
         $data = $service->getData($entity->getBody());
