@@ -7,8 +7,10 @@ class IconHelper
     public const ICONS = [
         'created' => '📎',
         'pending' => '⏳',
-        'running' => '⌛',
+        'running' => '🚀',
         'failed' => '❌',
         'success' => '✅',
+        'skipped' => '🗑️',
     ];
 }
+

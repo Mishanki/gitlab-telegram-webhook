@@ -4,6 +4,7 @@
 @case('pending')
 @case('running')
 @case('failed')
+@case('skipped')
 {{$item['icon']}} CI: <a href="{{$item['url']}}">{{$item['name']}}</a> {{$item['status']}}
 @break
 @case('success')

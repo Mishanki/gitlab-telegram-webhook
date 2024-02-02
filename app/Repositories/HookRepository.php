@@ -32,13 +32,20 @@ class HookRepository implements HookRepositoryInterface
     /**
      * @param string $event
      * @param string $hash
+     * @param null|int $messageId
      *
      * @return null|HookModel
      */
-    public function findOneByEventSha(string $event, string $hash): ?HookModel
+    public function findOneByEventSha(string $event, string $hash, ?int $messageId = null): ?HookModel
     {
-        return HookModel::where('event', '=', $event)
+        $model = HookModel::where('event', '=', $event)
             ->where('hash', '=', $hash)
+        ;
+        if ($messageId) {
+            $model->where('message_id', '=', $messageId);
+        }
+
+        return $model
             ->orderByDesc('id')
             ->first()
         ;
@@ -47,13 +54,20 @@ class HookRepository implements HookRepositoryInterface
     /**
      * @param string $event
      * @param string $hash
+     * @param null|int $messageId
      *
      * @return Collection
      */
-    public function findAllByEventSha(string $event, string $hash): Collection
+    public function findAllByEventSha(string $event, string $hash, ?int $messageId = null): Collection
     {
-        return HookModel::where('event', '=', $event)
+        $model = HookModel::where('event', '=', $event)
             ->where('hash', '=', $hash)
+        ;
+        if ($messageId) {
+            $model->where('message_id', '=', $messageId);
+        }
+
+        return $model
             ->orderBy('id')
             ->get()
         ;

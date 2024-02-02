@@ -11,7 +11,7 @@ interface HookRepositoryInterface
 
     public function findAllBySha(string $hash): Collection;
 
-    public function findOneByEventSha(string $event, string $hash): ?HookModel;
+    public function findOneByEventSha(string $event, string $hash, ?int $messageId = null): ?HookModel;
 
-    public function findAllByEventSha(string $event, string $hash): Collection;
+    public function findAllByEventSha(string $event, string $hash, ?int $messageId = null): Collection;
 }

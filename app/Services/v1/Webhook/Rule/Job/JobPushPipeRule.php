@@ -20,18 +20,14 @@ class JobPushPipeRule
      */
     public static function rule(SendEntity $entity, ?array $response = null): ?array
     {
-        if ($response) {
-            return $response;
-        }
-
         /* @var $service JobService */
         $service = app()->make(JobService::class);
         $data = $service->getData($entity->getBody());
         $shaHash = $service->getHash($entity->getBody());
 
         $push = $service->hookRepository->findOneByEventSha(HookEnum::HOOK_PUSH->value, $shaHash);
-        $pipe = $service->hookRepository->findOneByEventSha(HookEnum::HOOK_PIPELINE->value, $shaHash);
-        $jobCollection = $service->hookRepository->findAllByEventSha(HookEnum::HOOK_JOB->value, $shaHash);
+        $pipe = $service->hookRepository->findOneByEventSha(HookEnum::HOOK_PIPELINE->value, $shaHash, $push->message_id ?? null);
+        $jobCollection = $service->hookRepository->findAllByEventSha(HookEnum::HOOK_JOB->value, $shaHash, $push->message_id ?? null);
 
         if ($push && $pipe) {
             /* @var $jobItem HookModel */
