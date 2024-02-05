@@ -3,13 +3,17 @@
 namespace App\Services\v1\Webhook;
 
 use App\Helper\IconHelper;
+use App\Helper\StatusHelper;
+use App\Models\Hook\HookModel;
 use App\Network\Telegram\TelegramHTTPServiceInterface;
 use App\Repositories\HookRepositoryInterface;
 use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\Factory\WebhookFactoryInterface;
+use App\Services\v1\Webhook\Rule\Pipeline\PipelineJobRule;
 use App\Services\v1\Webhook\Rule\Pipeline\PipelinePushRule;
 use App\Services\v1\Webhook\Rule\Pipeline\PipelineRule;
 use App\Services\v1\Webhook\Trait\RuleTrait;
+use Illuminate\Support\Collection;
 
 class PipelineService implements WebhookFactoryInterface
 {
@@ -37,17 +41,20 @@ class PipelineService implements WebhookFactoryInterface
 
         $response = $this->ruleWork([
             PipelineRule::class,
+            PipelineJobRule::class,
             PipelinePushRule::class,
         ], $entity);
 
-        $this->hookRepository->store([
-            'event' => $entity->getHook(),
-            'hash' => $shaHash,
-            'body' => $entity->getBody(),
-            'short_body' => $data,
-            'render' => $sendTpl,
-            'message_id' => $response['message_id'] ?? null,
-        ]);
+        if ($response) {
+            $this->hookRepository->store([
+                'event' => $entity->getHook(),
+                'hash' => $shaHash,
+                'body' => $entity->getBody(),
+                'short_body' => $data,
+                'render' => $sendTpl,
+                'message_id' => $response['message_id'] ?? null,
+            ]);
+        }
 
         return $response;
     }
@@ -117,6 +124,24 @@ class PipelineService implements WebhookFactoryInterface
     }
 
     /**
+     * @param HookModel $pipe
+     * @param Collection $jobCollection
+     * @param array $updKeys
+     *
+     * @return array
+     */
+    public function updateDataByJobCollection(HookModel $pipe, Collection $jobCollection, array $updKeys = []): array
+    {
+        $pipeArr = (array) ($pipe->short_body ?? []);
+        /* @var $jobItem HookModel */
+        foreach ($jobCollection as $jobItem) {
+            $pipeArr = $this->updateData($pipeArr, $jobItem->short_body ?? [], $updKeys);
+        }
+
+        return $pipeArr;
+    }
+
+    /**
      * @param array $data
      * @param array $update
      * @param array $updKeys
@@ -131,6 +156,11 @@ class PipelineService implements WebhookFactoryInterface
 
         $id = $update['item']['build_id'];
         foreach ($data['message'][$id] as $k => $item) {
+            $currentStatus = $data['message'][$id]['status'];
+            $nextStatus = $update['item']['status'];
+            if(!StatusHelper::isChange($currentStatus, $nextStatus)) {
+                continue;
+            }
             if (\in_array($k, $updKeys, true)) {
                 $data['message'][$id][$k] = $update['item'][$k];
             }

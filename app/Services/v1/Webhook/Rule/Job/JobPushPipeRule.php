@@ -3,7 +3,6 @@
 namespace App\Services\v1\Webhook\Rule\Job;
 
 use App\Models\Hook\Enum\HookEnum;
-use App\Models\Hook\HookModel;
 use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\JobService;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -30,15 +29,11 @@ class JobPushPipeRule
         $jobCollection = $service->hookRepository->findAllByEventSha(HookEnum::HOOK_JOB->value, $shaHash, $push->message_id ?? null);
 
         if ($push && $pipe) {
-            /* @var $jobItem HookModel */
-            foreach ($jobCollection as $jobItem) {
-                $pipeShortBody = $service->pipelineService->updateData($pipe->short_body ?? [], $jobItem->short_body ?? [], ['icon', 'status', 'duration', 'queued_duration']);
-            }
+            $pipeShortBody = $service->pipelineService->updateDataByJobCollection($pipe, $jobCollection, ['icon', 'status', 'duration', 'queued_duration']);
+            $pipeShortBody = $service->pipelineService->updateData($pipeShortBody, $data, ['icon', 'status', 'duration', 'queued_duration']);
+            $editTpl = $service->pipelineService->getTemplate($pipeShortBody, $push->render);
 
-            $pipeShortBody ??= $pipe->short_body ?? [];
-            $shortBody = $service->pipelineService->updateData($pipeShortBody, $data, ['icon', 'status', 'duration', 'queued_duration']);
-            $editTpl = $service->pipelineService->getTemplate($shortBody, $push->render);
-            $response = $service->http->editMessage($entity->getChatId(), $push->message_id, $editTpl);
+            $response = $service->http->editMessage($entity->getChatId(), $pipe->message_id, $editTpl);
         }
 
         return $response ?? null;

@@ -6,6 +6,7 @@ use App\Network\Telegram\TelegramHTTPServiceInterface;
 use App\Repositories\HookRepositoryInterface;
 use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\Factory\WebhookFactoryInterface;
+use App\Services\v1\Webhook\Rule\Push\PushPipeRule;
 use App\Services\v1\Webhook\Rule\Push\PushRule;
 use App\Services\v1\Webhook\Trait\RuleTrait;
 
@@ -16,10 +17,12 @@ class PushService implements WebhookFactoryInterface
     /**
      * @param TelegramHTTPServiceInterface $http
      * @param HookRepositoryInterface $hookRepository
+     * @param PipelineService $pipelineService
      */
     public function __construct(
         public TelegramHTTPServiceInterface $http,
         public HookRepositoryInterface $hookRepository,
+        public PipelineService $pipelineService,
     ) {}
 
     /**
@@ -35,16 +38,19 @@ class PushService implements WebhookFactoryInterface
 
         $response = $this->ruleWork([
             PushRule::class,
+            PushPipeRule::class,
         ], $entity);
 
-        $this->hookRepository->store([
-            'event' => $entity->getHook(),
-            'hash' => $shaHash,
-            'body' => $entity->getBody(),
-            'short_body' => null,
-            'render' => $tpl,
-            'message_id' => $response['message_id'],
-        ]);
+        if ($response) {
+            $this->hookRepository->store([
+                'event' => $entity->getHook(),
+                'hash' => $shaHash,
+                'body' => $entity->getBody(),
+                'short_body' => null,
+                'render' => $tpl,
+                'message_id' => $response['message_id'],
+            ]);
+        }
 
         return $response;
     }
@@ -77,6 +83,11 @@ class PushService implements WebhookFactoryInterface
      */
     public function getTemplate(array $data, ?string $render = null): string
     {
-        return view('push.default', $data)->render();
+        $tpl = view('push.default', $data)->render();
+        if ($render) {
+            $tpl = $tpl. PHP_EOL . $render.PHP_EOL;
+        }
+
+        return $tpl;
     }
 }

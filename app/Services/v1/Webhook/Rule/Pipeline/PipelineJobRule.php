@@ -8,7 +8,7 @@ use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\PipelineService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
-class PipelinePushRule
+class PipelineJobRule
 {
     /**
      * @param SendEntity $entity
@@ -30,14 +30,15 @@ class PipelinePushRule
         $pipe = $service->hookRepository->findOneByEventSha(HookEnum::HOOK_PIPELINE->value, $shaHash);
         $jobCollection = $service->hookRepository->findAllByEventSha(HookEnum::HOOK_JOB->value, $shaHash, $job->message_id ?? null);
 
-        if ($push) {
+
+        if (!$push && $job && !$pipe) {
             /* @var $jobItem HookModel */
             foreach ($jobCollection as $jobItem) {
                 $editTpl = $service->updateData($data, $jobItem->short_body ?? [], ['icon', 'status', 'duration', 'queued_duration']);
             }
-            $editTpl = $service->getTemplate($editTpl, $push->render);
+            $editTpl = $service->getTemplate($editTpl);
 
-            $response = $service->http->editMessage($entity->getChatId(), $push->message_id, $editTpl);
+            $response = $service->http->editMessage($entity->getChatId(), $job->message_id, $editTpl);
         }
 
         return $response ?? null;

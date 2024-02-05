@@ -24,9 +24,17 @@ class PipelineRule
         $shaHash = $service->getHash($entity->getBody());
         $data = $service->getData($entity->getBody());
 
-        if ($push = $service->hookRepository->findOneByEventSha(HookEnum::HOOK_PUSH->value, $shaHash)) {
-            $editTpl = $service->getTemplate($data, $push->render);
-            $response = $service->http->editMessage($entity->getChatId(), $push->message_id, $editTpl);
+        $job = $service->hookRepository->findOneByEventSha(HookEnum::HOOK_JOB->value, $shaHash);
+        $push = $service->hookRepository->findOneByEventSha(HookEnum::HOOK_PUSH->value, $shaHash);
+        $pipe = $service->hookRepository->findOneByEventSha(HookEnum::HOOK_PIPELINE->value, $shaHash);
+
+        if (!$push && !$job && !$pipe) {
+            $sendTpl = $service->getTemplate($data);
+            $response = $service->http->sendMessage($entity->getChatId(), $sendTpl);
+        }
+        if (!$push && !$job && $pipe) {
+            $editTpl = $service->getTemplate($data);
+            $response = $service->http->editMessage($entity->getChatId(), $pipe->message_id, $editTpl);
         }
 
         return $response ?? null;

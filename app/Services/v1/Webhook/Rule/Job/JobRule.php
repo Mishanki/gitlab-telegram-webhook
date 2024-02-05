@@ -33,8 +33,8 @@ class JobRule
             $response = $service->http->sendMessage($entity->getChatId(), $sendTpl);
         }
         if (!$push && !$pipe && $job) {
-            $sendTpl = $service->getTemplate($data);
-            $response = $service->http->editMessage($entity->getChatId(), $job->message_id, $sendTpl);
+            $editTpl = $service->getTemplate($data);
+            $response = $service->http->editMessage($entity->getChatId(), $job->message_id, $editTpl);
         }
 
         return $response ?? null;

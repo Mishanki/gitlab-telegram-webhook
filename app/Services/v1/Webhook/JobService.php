@@ -46,15 +46,17 @@ class JobService implements WebhookFactoryInterface
             JobPushPipeRule::class,
         ], $entity);
 
-        $this->hookRepository->store([
-            'event' => $entity->getHook(),
-            'event_id' => $data['item']['build_id'] ?? null,
-            'hash' => $shaHash,
-            'body' => $entity->getBody(),
-            'short_body' => $data,
-            'render' => $tpl,
-            'message_id' => $response['message_id'] ?? null,
-        ]);
+        if ($response) {
+            $this->hookRepository->store([
+                'event' => $entity->getHook(),
+                'event_id' => $data['item']['build_id'] ?? null,
+                'hash' => $shaHash,
+                'body' => $entity->getBody(),
+                'short_body' => $data,
+                'render' => $tpl,
+                'message_id' => $response['message_id'] ?? null,
+            ]);
+        }
 
         return $response;
     }
