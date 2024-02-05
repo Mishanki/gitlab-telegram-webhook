@@ -31,7 +31,8 @@ class JobPipeRule
         $jobCollection = $service->hookRepository->findAllByEventSha(HookEnum::HOOK_JOB->value, $shaHash, $push->message_id ?? null);
 
         if (!$push && $pipe) {
-            $pipeShortBody = $service->pipelineService->updateDataByJobCollection($pipe, $jobCollection, ['icon', 'status', 'duration', 'queued_duration']);
+            $pipeArr = (array) ($pipe->short_body ?? []);
+            $pipeShortBody = $service->pipelineService->updateDataByJobCollection($pipeArr, $jobCollection, ['icon', 'status', 'duration', 'queued_duration']);
             $pipeShortBody = $service->pipelineService->updateData($pipeShortBody, $data, ['icon', 'status', 'duration', 'queued_duration']);
             $editTpl = $service->pipelineService->getTemplate($pipeShortBody);
 

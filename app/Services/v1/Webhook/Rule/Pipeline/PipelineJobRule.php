@@ -32,12 +32,8 @@ class PipelineJobRule
 
 
         if (!$push && $job && !$pipe) {
-            /* @var $jobItem HookModel */
-            foreach ($jobCollection as $jobItem) {
-                $editTpl = $service->updateData($data, $jobItem->short_body ?? [], ['icon', 'status', 'duration', 'queued_duration']);
-            }
-            $editTpl = $service->getTemplate($editTpl);
-
+            $data = $service->updateDataByJobCollection($data, $jobCollection, ['icon', 'status', 'duration', 'queued_duration']);
+            $editTpl = $service->getTemplate($data);
             $response = $service->http->editMessage($entity->getChatId(), $job->message_id, $editTpl);
         }
 

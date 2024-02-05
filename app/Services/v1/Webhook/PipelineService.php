@@ -124,15 +124,14 @@ class PipelineService implements WebhookFactoryInterface
     }
 
     /**
-     * @param HookModel $pipe
+     * @param array $pipeArr
      * @param Collection $jobCollection
      * @param array $updKeys
      *
      * @return array
      */
-    public function updateDataByJobCollection(HookModel $pipe, Collection $jobCollection, array $updKeys = []): array
+    public function updateDataByJobCollection(array $pipeArr, Collection $jobCollection, array $updKeys = []): array
     {
-        $pipeArr = (array) ($pipe->short_body ?? []);
         /* @var $jobItem HookModel */
         foreach ($jobCollection as $jobItem) {
             $pipeArr = $this->updateData($pipeArr, $jobItem->short_body ?? [], $updKeys);
@@ -158,7 +157,7 @@ class PipelineService implements WebhookFactoryInterface
         foreach ($data['message'][$id] as $k => $item) {
             $currentStatus = $data['message'][$id]['status'];
             $nextStatus = $update['item']['status'];
-            if(!StatusHelper::isChange($currentStatus, $nextStatus)) {
+            if (!StatusHelper::isChange($currentStatus, $nextStatus)) {
                 continue;
             }
             if (\in_array($k, $updKeys, true)) {

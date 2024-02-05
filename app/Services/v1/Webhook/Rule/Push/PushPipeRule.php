@@ -29,14 +29,9 @@ class PushPipeRule
         $jobCollection = $service->hookRepository->findAllByEventSha(HookEnum::HOOK_JOB->value, $shaHash, $push->message_id ?? null);
 
         if ($pipe) {
-            /* @var $jobItem HookModel */
-            foreach ($jobCollection as $jobItem) {
-                $pipeShortBody = $service->pipelineService->updateData($pipe->short_body ?? [], $jobItem->short_body ?? [], ['icon', 'status', 'duration', 'queued_duration']);
-            }
-
-            $pipeShortBody ??= $pipe->short_body ?? [];
+            $pipeArr = (array) ($pipe->short_body ?? []);
+            $pipeShortBody = $service->pipelineService->updateDataByJobCollection($pipeArr, $jobCollection, ['icon', 'status', 'duration', 'queued_duration']);
             $pipeTpl = $service->pipelineService->getTemplate($pipeShortBody);
-
             $editTpl = $service->getTemplate($data, $pipeTpl);
             $response = $service->http->editMessage($entity->getChatId(), $pipe->message_id, $editTpl);
         }
