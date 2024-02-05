@@ -41,7 +41,7 @@ services:
         context: .
         dockerfile: _docker/local/app/Dockerfile
    container_name: gitlab-notification-queue
-   command: php artisan queue:listen database --queue=default --timeout=1800 --tries=5 --delay=2 --sleep=2
+   command: php artisan queue:listen database --queue=default --timeout=1800 --tries=5 --delay=2 --sleep=1
    restart: always
    volumes:
     - ./:/var/www
