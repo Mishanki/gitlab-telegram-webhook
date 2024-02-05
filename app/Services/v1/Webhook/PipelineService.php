@@ -89,7 +89,7 @@ class PipelineService implements WebhookFactoryInterface
             }
         }
         if (!empty($message)) {
-            $message = collect($message)->sortBy([['sort_num', 'asc'], ['stage', 'asc']])->toArray();
+            $message = collect($message)->sortBy([['sort_num', 'asc'], ['name', 'asc']])->toArray();
         }
 
         return [

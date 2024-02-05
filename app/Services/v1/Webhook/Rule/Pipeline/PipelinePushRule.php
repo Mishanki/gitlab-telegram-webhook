@@ -3,7 +3,6 @@
 namespace App\Services\v1\Webhook\Rule\Pipeline;
 
 use App\Models\Hook\Enum\HookEnum;
-use App\Models\Hook\HookModel;
 use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\PipelineService;
 use Illuminate\Contracts\Container\BindingResolutionException;
