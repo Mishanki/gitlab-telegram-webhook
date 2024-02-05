@@ -28,7 +28,7 @@ class SendAction extends BaseController
         ProcessWebhook::dispatch(
             $entity,
             $this->webhookFactory,
-        )->delay(now()->addSeconds(3));
+        );
 
         return response()
             ->json([

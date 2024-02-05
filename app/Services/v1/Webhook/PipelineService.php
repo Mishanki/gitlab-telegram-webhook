@@ -154,9 +154,9 @@ class PipelineService implements WebhookFactoryInterface
         }
 
         $id = $update['item']['build_id'];
+        $currentStatus = $data['message'][$id]['status'];
+        $nextStatus = $update['item']['status'];
         foreach ($data['message'][$id] as $k => $item) {
-            $currentStatus = $data['message'][$id]['status'];
-            $nextStatus = $update['item']['status'];
             if (!StatusHelper::isChange($currentStatus, $nextStatus)) {
                 continue;
             }
