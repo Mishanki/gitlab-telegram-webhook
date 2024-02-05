@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\v1\Action\Webhook;
 
 use App\Http\Requests\v1\Webhook\SendRequest;
+use App\Jobs\ProcessWebhook;
 use App\Services\v1\Webhook\Entity\SendEntity;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
@@ -24,9 +25,14 @@ class SendAction extends BaseController
         $entity->setHash($request->validated('hash'));
         $entity->setBody($request->validated('body'));
 
+        ProcessWebhook::dispatch(
+            $entity,
+            $this->webhookFactory,
+        );
+
         return response()
             ->json([
-                'data' => $this->webhookFactory->create($entity->hook)->send($entity),
+                'data' => true,
             ])
             ->setEncodingOptions(JSON_UNESCAPED_UNICODE)
         ;

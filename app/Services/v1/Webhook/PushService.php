@@ -6,6 +6,7 @@ use App\Network\Telegram\TelegramHTTPServiceInterface;
 use App\Repositories\HookRepositoryInterface;
 use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\Factory\WebhookFactoryInterface;
+use App\Services\v1\Webhook\Rule\Push\PushJobRule;
 use App\Services\v1\Webhook\Rule\Push\PushPipeRule;
 use App\Services\v1\Webhook\Rule\Push\PushRule;
 use App\Services\v1\Webhook\Trait\RuleTrait;
@@ -38,6 +39,7 @@ class PushService implements WebhookFactoryInterface
 
         $response = $this->ruleWork([
             PushRule::class,
+            PushJobRule::class,
             PushPipeRule::class,
         ], $entity);
 
