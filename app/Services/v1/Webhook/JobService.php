@@ -31,9 +31,9 @@ class JobService implements WebhookFactoryInterface
     /**
      * @param SendEntity $entity
      *
-     * @return null|array
+     * @return bool
      */
-    public function send(SendEntity $entity): ?array
+    public function send(SendEntity $entity): bool
     {
         $data = $this->getData($entity->getBody());
         $shaHash = $this->getHash($entity->getBody());
@@ -58,7 +58,7 @@ class JobService implements WebhookFactoryInterface
             ]);
         }
 
-        return $response;
+        return true;
     }
 
     /**

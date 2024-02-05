@@ -31,9 +31,9 @@ class PipelineService implements WebhookFactoryInterface
     /**
      * @param SendEntity $entity
      *
-     * @return null|array
+     * @return bool
      */
-    public function send(SendEntity $entity): ?array
+    public function send(SendEntity $entity): bool
     {
         $data = $this->getData($entity->getBody());
         $sendTpl = $this->getTemplate($data);
@@ -56,7 +56,7 @@ class PipelineService implements WebhookFactoryInterface
             ]);
         }
 
-        return $response;
+        return true;
     }
 
     /**
