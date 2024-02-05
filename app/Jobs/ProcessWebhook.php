@@ -17,8 +17,6 @@ class ProcessWebhook implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public $delay = 1;
-
     /**
      * Create a new job instance.
      */
