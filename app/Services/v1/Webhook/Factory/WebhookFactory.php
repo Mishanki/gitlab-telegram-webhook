@@ -14,6 +14,7 @@ use App\Services\v1\Webhook\PipelineService;
 use App\Services\v1\Webhook\PushService;
 use App\Services\v1\Webhook\ReleaseService;
 use App\Services\v1\Webhook\TagPushService;
+use App\Services\v1\Webhook\WikiService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class WebhookFactory
@@ -63,6 +64,10 @@ class WebhookFactory
                 break;
             case HookEnum::HOOK_FEATURE_FLAG->value:
                 $service = app()->make(FeatureFlagService::class);
+
+                break;
+            case HookEnum::HOOK_WIKI_PAGE->value:
+                $service = app()->make(WikiService::class);
 
                 break;
             default:
