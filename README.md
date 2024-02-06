@@ -23,7 +23,9 @@ TELEGRAM_HASH_CHAT_IDS="hash:chat_id;hash_2:chat_id_2"
 [x] Allow requests to the local network from webhooks and integrations
 ```
 
-- Add Webhook to Gitlab
+### Add URL to Gitlab Webhook Settings
+
+![title](storage/app/public/webhook.png)
 
 ### Docker
 ```dockerfile
