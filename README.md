@@ -44,7 +44,10 @@ docker exec -it gitlab-notification-app php artisan migrate
 
 #### Add URL to Gitlab Webhook Settings
 
-- URL hash **ab487e9d750a3c50876d12e8f381a79f** from .env TELEGRAM_HASH_CHAT_IDS
-- PORT can be set in .env APP_HTTP_PORT
+- Settings ->  Webhooks  ->  Add new webhook
 
 ![title](storage/app/public/webhook.png)
+
+
+- URL hash **ab487e9d750a3c50876d12e8f381a79f** from .env TELEGRAM_HASH_CHAT_IDS
+- PORT can be set in .env APP_HTTP_PORT
