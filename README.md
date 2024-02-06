@@ -1,6 +1,8 @@
 # Gitlab webhook notifications
 ## Telegram bot
 
+![title](storage/app/public/example.png)
+
 ### Create bot
 - Create bot via [@BotFather](https://telegram.me/BotFather) 
 - Invite bot to the channel
