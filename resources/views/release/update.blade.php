@@ -2,6 +2,5 @@
 
 🔖 Tag: <b>{{$tag}}</b>
 🗞 Name: <b>{{$name}}</b>
-
 @include('partials.content')
 

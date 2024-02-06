@@ -5,6 +5,7 @@ namespace App\Services\v1\Webhook\Factory;
 use App\Core\Errors;
 use App\Exceptions\ValidationException;
 use App\Models\Hook\Enum\HookEnum;
+use App\Services\v1\Webhook\IssueService;
 use App\Services\v1\Webhook\JobService;
 use App\Services\v1\Webhook\MergeRequestService;
 use App\Services\v1\Webhook\PipelineService;
@@ -48,6 +49,10 @@ class WebhookFactory
                 break;
             case HookEnum::HOOK_RELEASE->value:
                 $service = app()->make(ReleaseService::class);
+
+                break;
+            case HookEnum::HOOK_ISSUE->value:
+                $service = app()->make(IssueService::class);
 
                 break;
             default:
