@@ -1,5 +1,5 @@
 {
-    "name": "larabot/gitlab-notification",
+    "name": "larahook/gitlab-notification",
     "type": "project",
     "description": "Webhook gitlab notification via telegram bot",
     "keywords": ["laravel", "gitlab", "telegram", "webhook", "notification", "events"],
