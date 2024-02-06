@@ -14,7 +14,6 @@ class HookRepository implements HookRepositoryInterface
      */
     public function store(array $data): HookModel
     {
-
         return HookModel::updateOrCreate([
             'event' => $data['event'],
             'hash' => $data['hash'],

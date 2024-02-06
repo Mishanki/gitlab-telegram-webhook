@@ -6,6 +6,7 @@ use App\Models\Hook\Enum\HookEnum;
 use App\Services\v1\Webhook\JobService;
 use App\Services\v1\Webhook\PipelineService;
 use App\Services\v1\Webhook\PushService;
+use App\Services\v1\Webhook\TagPushService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class WebhookFactory
@@ -30,6 +31,10 @@ class WebhookFactory
                 break;
             case HookEnum::HOOK_JOB->value:
                 $service = app()->make(JobService::class);
+
+                break;
+            case HookEnum::HOOK_TAG_PUSH->value:
+                $service = app()->make(TagPushService::class);
 
                 break;
         }

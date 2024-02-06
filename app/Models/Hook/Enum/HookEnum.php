@@ -9,4 +9,6 @@ enum HookEnum: string
     case HOOK_PIPELINE = 'Pipeline Hook';
 
     case HOOK_JOB = 'Job Hook';
+
+    case HOOK_TAG_PUSH = 'Tag Push Hook';
 }
