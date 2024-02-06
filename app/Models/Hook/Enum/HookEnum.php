@@ -11,4 +11,6 @@ enum HookEnum: string
     case HOOK_JOB = 'Job Hook';
 
     case HOOK_TAG_PUSH = 'Tag Push Hook';
+
+    case HOOK_MERGE_REQUEST = 'Merge Request Hook';
 }

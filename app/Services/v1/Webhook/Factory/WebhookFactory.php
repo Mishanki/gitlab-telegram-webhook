@@ -2,8 +2,11 @@
 
 namespace App\Services\v1\Webhook\Factory;
 
+use App\Core\Errors;
+use App\Exceptions\ValidationException;
 use App\Models\Hook\Enum\HookEnum;
 use App\Services\v1\Webhook\JobService;
+use App\Services\v1\Webhook\MergeRequestService;
 use App\Services\v1\Webhook\PipelineService;
 use App\Services\v1\Webhook\PushService;
 use App\Services\v1\Webhook\TagPushService;
@@ -17,6 +20,7 @@ class WebhookFactory
      * @return mixed
      *
      * @throws BindingResolutionException
+     * @throws ValidationException
      */
     public function create(string $hook): WebhookFactoryInterface
     {
@@ -37,6 +41,12 @@ class WebhookFactory
                 $service = app()->make(TagPushService::class);
 
                 break;
+            case HookEnum::HOOK_MERGE_REQUEST->value:
+                $service = app()->make(MergeRequestService::class);
+
+                break;
+            default:
+                throw new ValidationException('Hook factory is not found', Errors::VALIDATION_ERROR->value);
         }
 
         return $service;
