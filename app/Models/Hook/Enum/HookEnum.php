@@ -17,4 +17,6 @@ enum HookEnum: string
     case HOOK_RELEASE = 'Release Hook';
 
     case HOOK_ISSUE = 'Issue Hook';
+
+    case HOOK_NOTE = 'Note Hook';
 }

@@ -8,6 +8,7 @@ use App\Models\Hook\Enum\HookEnum;
 use App\Services\v1\Webhook\IssueService;
 use App\Services\v1\Webhook\JobService;
 use App\Services\v1\Webhook\MergeRequestService;
+use App\Services\v1\Webhook\NoteService;
 use App\Services\v1\Webhook\PipelineService;
 use App\Services\v1\Webhook\PushService;
 use App\Services\v1\Webhook\ReleaseService;
@@ -53,6 +54,10 @@ class WebhookFactory
                 break;
             case HookEnum::HOOK_ISSUE->value:
                 $service = app()->make(IssueService::class);
+
+                break;
+            case HookEnum::HOOK_NOTE->value:
+                $service = app()->make(NoteService::class);
 
                 break;
             default:
