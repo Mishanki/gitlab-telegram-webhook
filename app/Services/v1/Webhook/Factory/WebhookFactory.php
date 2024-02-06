@@ -9,6 +9,7 @@ use App\Services\v1\Webhook\JobService;
 use App\Services\v1\Webhook\MergeRequestService;
 use App\Services\v1\Webhook\PipelineService;
 use App\Services\v1\Webhook\PushService;
+use App\Services\v1\Webhook\ReleaseService;
 use App\Services\v1\Webhook\TagPushService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
@@ -17,7 +18,7 @@ class WebhookFactory
     /**
      * @param string $hook
      *
-     * @return mixed
+     * @return WebhookFactoryInterface
      *
      * @throws BindingResolutionException
      * @throws ValidationException
@@ -43,6 +44,10 @@ class WebhookFactory
                 break;
             case HookEnum::HOOK_MERGE_REQUEST->value:
                 $service = app()->make(MergeRequestService::class);
+
+                break;
+            case HookEnum::HOOK_RELEASE->value:
+                $service = app()->make(ReleaseService::class);
 
                 break;
             default:

@@ -6,10 +6,10 @@ use App\Network\Telegram\TelegramHTTPServiceInterface;
 use App\Repositories\HookRepositoryInterface;
 use App\Services\v1\Webhook\Entity\SendEntity;
 use App\Services\v1\Webhook\Factory\WebhookFactoryInterface;
-use App\Services\v1\Webhook\Rule\TagPush\TagPushRule;
+use App\Services\v1\Webhook\Rule\Realese\ReleaseRule;
 use App\Services\v1\Webhook\Trait\RuleTrait;
 
-class TagPushService implements WebhookFactoryInterface
+class ReleaseService implements WebhookFactoryInterface
 {
     use RuleTrait;
 
@@ -34,7 +34,7 @@ class TagPushService implements WebhookFactoryInterface
         $tpl = $this->getTemplate($data);
 
         $response = $this->ruleWork([
-            TagPushRule::class,
+            ReleaseRule::class,
         ], $entity);
 
         if ($response) {
@@ -58,7 +58,7 @@ class TagPushService implements WebhookFactoryInterface
      */
     public function getHash(array $body): string
     {
-        return $body['after'];
+        return $body['commit']['id'];
     }
 
     /**
@@ -79,11 +79,21 @@ class TagPushService implements WebhookFactoryInterface
      */
     public function getTemplate(array $data, ?string $render = null): string
     {
-        $tpl = view('tag_push.default', $data)->render();
+        $tpl = view('release.'.$this->getStatus($data), $data)->render();
         if ($render) {
-            $tpl = $tpl.PHP_EOL.$render.PHP_EOL;
+            $tpl = $render.PHP_EOL.$tpl;
         }
 
         return $tpl;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return string
+     */
+    private function getStatus(array $data): string
+    {
+        return $data['action'] ?? 'default';
     }
 }

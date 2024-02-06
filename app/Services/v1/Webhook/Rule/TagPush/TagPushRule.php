@@ -4,7 +4,6 @@ namespace App\Services\v1\Webhook\Rule\TagPush;
 
 use App\Models\Hook\Enum\HookEnum;
 use App\Services\v1\Webhook\Entity\SendEntity;
-use App\Services\v1\Webhook\PushService;
 use App\Services\v1\Webhook\TagPushService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
@@ -20,7 +19,7 @@ class TagPushRule
      */
     public static function rule(SendEntity $entity, ?array $response = null): ?array
     {
-        /* @var $service PushService */
+        /* @var $service TagPushService */
         $service = app()->make(TagPushService::class);
         $data = $service->getData($entity->getBody());
         $shaHash = $service->getHash($entity->getBody());
@@ -33,7 +32,7 @@ class TagPushRule
         }
         if ($tagPush) {
             $editTpl = $service->getTemplate($data);
-            $response = $service->http->editMessage($entity->getChatId(),$tagPush->message_id, $editTpl);
+            $response = $service->http->editMessage($entity->getChatId(), $tagPush->message_id, $editTpl);
         }
 
         return $response ?? null;

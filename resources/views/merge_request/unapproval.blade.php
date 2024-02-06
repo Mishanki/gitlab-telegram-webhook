@@ -4,6 +4,6 @@
 
 🌳 {{$object_attributes['source_branch']}} -> {{$object_attributes['target_branch']}} 🎯
 
-@include('merge_request.partials.assignees')
-@include('merge_request.partials.reviewers')
-@include('merge_request.partials.content')
+@include('partials.assignees')
+@include('partials.reviewers')
+@include('partials.content')

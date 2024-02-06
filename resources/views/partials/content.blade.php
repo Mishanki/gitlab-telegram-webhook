@@ -15,5 +15,5 @@ if (!empty($body) && strlen($body) > 50) {
 }
 @endphp
 @if (!empty($body))
-📖 <b>Content:</b>{{$body}}
+📖 <b>Content:</b> {{$body}}
 @endif
