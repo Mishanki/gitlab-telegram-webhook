@@ -1,5 +1,5 @@
 # Gitlab webhook notifications
-## Telegram bot
+### Telegram bot
 
 ![title](storage/app/public/example.png)
 
