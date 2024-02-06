@@ -5,6 +5,7 @@ namespace App\Services\v1\Webhook\Factory;
 use App\Core\Errors;
 use App\Exceptions\ValidationException;
 use App\Models\Hook\Enum\HookEnum;
+use App\Services\v1\Webhook\FeatureFlagService;
 use App\Services\v1\Webhook\IssueService;
 use App\Services\v1\Webhook\JobService;
 use App\Services\v1\Webhook\MergeRequestService;
@@ -58,6 +59,10 @@ class WebhookFactory
                 break;
             case HookEnum::HOOK_NOTE->value:
                 $service = app()->make(NoteService::class);
+
+                break;
+            case HookEnum::HOOK_FEATURE_FLAG->value:
+                $service = app()->make(FeatureFlagService::class);
 
                 break;
             default:
