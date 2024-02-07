@@ -5,7 +5,6 @@ namespace App\Http\Controllers\v1\Action\Webhook;
 use App\Http\Requests\v1\Webhook\SendRequest;
 use App\Jobs\ProcessWebhook;
 use App\Services\v1\Webhook\Entity\SendEntity;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 
 class SendAction extends BaseController
@@ -14,8 +13,6 @@ class SendAction extends BaseController
      * @param SendRequest $request
      *
      * @return JsonResponse
-     *
-     * @throws BindingResolutionException
      */
     public function __invoke(SendRequest $request): JsonResponse
     {
@@ -28,7 +25,7 @@ class SendAction extends BaseController
         ProcessWebhook::dispatch(
             $entity,
             $this->webhookFactory,
-            3,
+            env('QUEUE_SLEEP_BETWEEN_JOBS', 3),
         );
 
         return response()
