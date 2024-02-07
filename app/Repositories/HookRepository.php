@@ -55,7 +55,7 @@ class HookRepository implements HookRepositoryInterface
         }
 
         return $model
-            ->orderByDesc('id')
+            ->orderByDesc('updated_at')
             ->first()
         ;
     }
@@ -77,7 +77,7 @@ class HookRepository implements HookRepositoryInterface
         }
 
         return $model
-            ->orderBy('id')
+            ->orderBy('updated_at')
             ->get()
         ;
     }
