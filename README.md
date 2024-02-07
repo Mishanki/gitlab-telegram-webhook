@@ -11,6 +11,13 @@
 ## Run Project
 
 ### Add channel and bot props to project .env file
+
+Copy .env.example file to .env
+```bash
+cp .env.example .env
+```
+
+Update config
 ```dotenv
 # Telegram
 TELEGRAM_BOT_HOST=https://api.telegram.org/bot
