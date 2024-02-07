@@ -61,7 +61,7 @@ class MergeRequestService implements WebhookFactoryInterface
      */
     public function getHash(array $body): string
     {
-        return $body['object_attributes']['merge_commit_sha'];
+        return $body['object_attributes']['last_commit']['id'] ?? $body['object_attributes']['merge_commit_sha'];
     }
 
     /**
