@@ -28,6 +28,7 @@ class SendAction extends BaseController
         ProcessWebhook::dispatch(
             $entity,
             $this->webhookFactory,
+            3,
         );
 
         return response()

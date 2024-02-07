@@ -16,12 +16,18 @@ class ProcessWebhook implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+
     /**
      * Create a new job instance.
+     *
+     * @param SendEntity $entity
+     * @param WebhookFactory $webhookFactory
+     * @param int $sleepBetweenJobs
      */
     public function __construct(
         public SendEntity $entity,
         public WebhookFactory $webhookFactory,
+        public int $sleepBetweenJobs,
     ) {}
 
     /**
@@ -30,5 +36,8 @@ class ProcessWebhook implements ShouldQueue
     public function handle(): void
     {
         $this->webhookFactory->create($this->entity->hook)->send($this->entity);
+        if ($this->sleepBetweenJobs) {
+            sleep($this->sleepBetweenJobs);
+        }
     }
 }
