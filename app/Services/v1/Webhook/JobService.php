@@ -40,7 +40,7 @@ class JobService implements WebhookFactoryInterface
         $tpl = $this->getTemplate($data);
 
         $response = $this->ruleWork([
-            JobRule::class,
+//            JobRule::class,
             JobPushRule::class,
             JobPipeRule::class,
             JobPushPipeRule::class,
