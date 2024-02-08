@@ -25,7 +25,6 @@ class SendAction extends BaseController
         ProcessWebhook::dispatch(
             $entity,
             $this->webhookFactory,
-            env('QUEUE_SLEEP_BETWEEN_JOBS', 3),
         );
 
         return response()
