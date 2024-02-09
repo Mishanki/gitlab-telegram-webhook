@@ -68,25 +68,16 @@ class PipelineService implements WebhookFactoryInterface
     {
         $stages = $body['object_attributes']['stages'] ?? [];
         foreach ($body['builds'] ?? [] as $build) {
-            switch ($build['status']) {
-                case 'created':
-                case 'pending':
-                case 'running':
-                case 'failed':
-                case 'success':
-                    $message[$build['id']] = [
-                        'icon' => IconHelper::ICONS[$build['status']] ?? null,
-                        'url' => $body['project']['web_url'].'/builds/'.$build['id'],
-                        'name' => $build['name'],
-                        'status' => $build['status'],
-                        'stage' => $build['stage'],
-                        'duration' => $build['duration'],
-                        'queued_duration' => $build['queued_duration'],
-                        'sort_num' => array_search($build['stage'], $stages, true),
-                    ];
-
-                    break;
-            }
+            $message[$build['id']] = [
+                'icon' => IconHelper::ICONS[$build['status']] ?? null,
+                'url' => $body['project']['web_url'].'/builds/'.$build['id'],
+                'name' => $build['name'],
+                'status' => $build['status'],
+                'stage' => $build['stage'],
+                'duration' => $build['duration'],
+                'queued_duration' => $build['queued_duration'],
+                'sort_num' => array_search($build['stage'], $stages, true),
+            ];
         }
         if (!empty($message)) {
             $message = collect($message)->sortBy([['sort_num', 'asc'], ['name', 'asc']])->toArray();
