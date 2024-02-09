@@ -12,3 +12,15 @@
 @break
 @endswitch
 @endforeach
+@php
+    $total = 0;
+    foreach($message as $id => $item) {
+        if($item['status'] == 'success') {
+            $total += $item['duration'] + $item['queued_duration'];;
+        }
+    }
+@endphp
+
+@if ($total > 0 && count($message) > 1)
+Total time: {{\Carbon\CarbonInterval::seconds($total)->cascade()->forHumans(short:true)}}
+@endif
