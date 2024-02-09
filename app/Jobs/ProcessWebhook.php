@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Spatie\RateLimitedMiddleware\RateLimited;
 
 class ProcessWebhook implements ShouldQueue
 {
@@ -27,6 +28,20 @@ class ProcessWebhook implements ShouldQueue
         public SendEntity $entity,
         public WebhookFactory $webhookFactory,
     ) {}
+
+    /**
+     * @return array
+     */
+    public function middleware(): array
+    {
+        $rateLimitedMiddleware = (new RateLimited(true))
+            ->allow(env('RATE_LIMITER_ALLOW', 20))
+            ->everySeconds(env('RATE_LIMITER_EVERY_SECONDS', 60))
+            ->releaseAfterSeconds(env('RATE_LIMITER_RELEASE_AFTER_SECONDS', 30))
+        ;
+
+        return [$rateLimitedMiddleware];
+    }
 
     /**
      * Execute the job.
