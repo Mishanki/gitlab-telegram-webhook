@@ -40,7 +40,7 @@ class PipelineService implements WebhookFactoryInterface
         $shaHash = $this->getHash($entity->getBody());
 
         $response = $this->ruleWork([
-            PipelineRule::class,
+//            PipelineRule::class,
             PipelineJobRule::class,
             PipelinePushRule::class,
         ], $entity);
