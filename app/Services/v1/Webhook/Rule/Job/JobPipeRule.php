@@ -32,8 +32,8 @@ class JobPipeRule
 
         if (!$push && $pipe) {
             $pipeArr = (array) ($pipe->short_body ?? []);
-            $pipeShortBody = $service->pipelineService->updateDataByJobCollection($pipeArr, $jobCollection, ['icon', 'status', 'duration', 'queued_duration', 'created_at', 'started_at', 'finished_at']);
-            $pipeShortBody = $service->pipelineService->updateData($pipeShortBody, $data, ['icon', 'status', 'duration', 'queued_duration', 'created_at', 'started_at', 'finished_at']);
+            $pipeShortBody = $service->pipelineService->updateDataByJobCollection($pipeArr, $jobCollection, ['icon', 'status', 'duration', 'queued_duration']);
+            $pipeShortBody = $service->pipelineService->updateData($pipeShortBody, $data, ['icon', 'status', 'duration', 'queued_duration']);
             $editTpl = $service->pipelineService->getTemplate($pipeShortBody);
 
             $response = $service->http->editMessage($entity->getChatId(), $pipe->message_id, $editTpl);

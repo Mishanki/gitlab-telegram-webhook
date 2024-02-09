@@ -12,22 +12,3 @@
 @break
 @endswitch
 @endforeach
-@php
-    $times = [];
-    $total = 0;
-    foreach($message as $id => $item) {
-        if (!empty($item['created_at'])) {
-            $times[] = strtotime($item['created_at']);
-        }
-        if (!empty($item['started_at'])) {
-            $times[] = strtotime($item['started_at']);
-        }
-    }
-    if ($times) {
-        $total = max($times) - min($times);
-    }
-@endphp
-
-@if ($total > 0 && count($message) > 1)
-Total time: {{\Carbon\CarbonInterval::seconds($total)->cascade()->forHumans(short:true)}}
-@endif

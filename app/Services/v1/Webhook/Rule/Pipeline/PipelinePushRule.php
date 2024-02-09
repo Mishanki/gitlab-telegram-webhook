@@ -30,7 +30,7 @@ class PipelinePushRule
         $jobCollection = $service->hookRepository->findAllByEventSha(HookEnum::HOOK_JOB->value, $shaHash, $job->message_id ?? null);
 
         if ($push) {
-            $data = $service->updateDataByJobCollection($data, $jobCollection, ['icon', 'status', 'duration', 'queued_duration', 'created_at', 'started_at', 'finished_at']);
+            $data = $service->updateDataByJobCollection($data, $jobCollection, ['icon', 'status', 'duration', 'queued_duration']);
             $editTpl = $service->getTemplate($data, $push->render);
 
             $response = $service->http->editMessage($entity->getChatId(), $push->message_id, $editTpl);
