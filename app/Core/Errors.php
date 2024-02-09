@@ -59,6 +59,8 @@ enum Errors: int
 
     case TELEGRAM_RULE_DUBLICATE_ERROR = 9002;
 
+    case TELEGRAM_REQUEST_EXCEPTION = 9003;
+
     /**
      * @return string
      *

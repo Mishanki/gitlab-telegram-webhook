@@ -4,6 +4,8 @@ namespace App\Network\Telegram;
 
 use App\Core\Errors;
 use App\Exceptions\ApplicationException;
+use App\Exceptions\BadRequestException;
+use App\Helper\Log\TelegramLogHelper;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class TelegramHTTPService implements TelegramHTTPServiceInterface
@@ -23,7 +25,11 @@ class TelegramHTTPService implements TelegramHTTPServiceInterface
      */
     public function sendMessage(int $chatId, string $text): ?array
     {
-        $response = $this->http->sendMessage($chatId, $text)->json();
+        try {
+            $response = $this->http->sendMessage($chatId, $text)->json();
+        } catch (\Throwable $e) {
+            throw new BadRequestException(TelegramLogHelper::hideBotInfo($e->getMessage()), Errors::TELEGRAM_REQUEST_EXCEPTION->value);
+        }
         if (!($response['ok'] ?? false)) {
             throw new ApplicationException('Telegram response error', Errors::TELEGRAM_RESPONSE_ERROR->value);
         }
@@ -46,7 +52,12 @@ class TelegramHTTPService implements TelegramHTTPServiceInterface
         }
         \Cache::set($chatId.'_'.$messageId, $text, 60 * 5);
 
-        $response = $this->http->editMessage($chatId, $messageId, $text)->json();
+        try {
+            $response = $this->http->editMessage($chatId, $messageId, $text)->json();
+        } catch (\Throwable $e) {
+            throw new BadRequestException(TelegramLogHelper::hideBotInfo($e->getMessage()), Errors::TELEGRAM_REQUEST_EXCEPTION->value);
+        }
+
         if (!($response['ok'] ?? false)) {
             throw new ApplicationException('Telegram response error: '.$response['description'] ?? null, Errors::TELEGRAM_RESPONSE_ERROR->value);
         }
