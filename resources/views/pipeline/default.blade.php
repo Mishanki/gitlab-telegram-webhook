@@ -19,8 +19,8 @@
         if (!empty($item['created_at'])) {
             $times[] = strtotime($item['created_at']);
         }
-        if (!empty($item['finished_at'])) {
-            $times[] = strtotime($item['finished_at']);
+        if (!empty($item['started_at'])) {
+            $times[] = strtotime($item['started_at']);
         }
     }
     if ($times) {
