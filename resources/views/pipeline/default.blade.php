@@ -13,11 +13,18 @@
 @endswitch
 @endforeach
 @php
+    $times = [];
     $total = 0;
     foreach($message as $id => $item) {
-        if($item['status'] == 'success') {
-            $total += $item['duration'] + $item['queued_duration'];;
+        if (!empty($item['created_at'])) {
+            $times[] = strtotime($item['created_at']);
         }
+        if (!empty($item['finished_at'])) {
+            $times[] = strtotime($item['finished_at']);
+        }
+    }
+    if ($times) {
+        $total = max($times) - min($times);
     }
 @endphp
 
