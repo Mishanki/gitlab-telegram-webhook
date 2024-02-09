@@ -12,3 +12,12 @@
 @break
 @endswitch
 @endforeach
+
+@foreach($message as $id => $item)
+@if (!empty($item['total_duration']) > 0 && count($message) > 1)
+Total time: {{\Carbon\CarbonInterval::seconds($item['total_duration'])->cascade()->forHumans(short:true)}}
+@break
+@endif
+@endforeach
+
+

@@ -67,6 +67,7 @@ class PipelineService implements WebhookFactoryInterface
     public function getData(array $body): array
     {
         $stages = $body['object_attributes']['stages'] ?? [];
+        $totalDuration = $body['object_attributes']['duration'] ?? null;
         foreach ($body['builds'] ?? [] as $build) {
             $message[$build['id']] = [
                 'icon' => IconHelper::ICONS[$build['status']] ?? null,
@@ -76,6 +77,7 @@ class PipelineService implements WebhookFactoryInterface
                 'stage' => $build['stage'],
                 'duration' => $build['duration'],
                 'queued_duration' => $build['queued_duration'],
+                'total_duration' => $totalDuration,
                 'sort_num' => array_search($build['stage'], $stages, true),
             ];
         }
