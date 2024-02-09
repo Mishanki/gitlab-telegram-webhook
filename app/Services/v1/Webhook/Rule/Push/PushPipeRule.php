@@ -30,7 +30,7 @@ class PushPipeRule
 
         if ($pipe) {
             $pipeArr = (array) ($pipe->short_body ?? []);
-            $pipeShortBody = $service->pipelineService->updateDataByJobCollection($pipeArr, $jobCollection, ['icon', 'status', 'duration', 'queued_duration']);
+            $pipeShortBody = $service->pipelineService->updateDataByJobCollection($pipeArr, $jobCollection, ['icon', 'status', 'duration', 'queued_duration', 'created_at', 'started_at', 'finished_at']);
             $pipeTpl = $service->pipelineService->getTemplate($pipeShortBody);
             $editTpl = $service->getTemplate($data, $pipeTpl);
             $response = $service->http->editMessage($entity->getChatId(), $pipe->message_id, $editTpl);
