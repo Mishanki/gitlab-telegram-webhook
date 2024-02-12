@@ -40,7 +40,7 @@ class PipelineService implements WebhookFactoryInterface
         $shaHash = $this->getHash($entity->getBody());
 
         $response = $this->ruleWork([
-//            PipelineRule::class,
+            //            PipelineRule::class,
             PipelineJobRule::class,
             PipelinePushRule::class,
         ], $entity);
@@ -81,12 +81,9 @@ class PipelineService implements WebhookFactoryInterface
                 'sort_num' => array_search($build['stage'], $stages, true),
             ];
         }
-        if (!empty($message)) {
-            $message = collect($message)->sortBy([['sort_num', 'asc'], ['name', 'asc']])->toArray();
-        }
 
         return [
-            'message' => $message ?? [],
+            'message' => $this->sortData($message ?? []),
         ];
     }
 
@@ -147,15 +144,15 @@ class PipelineService implements WebhookFactoryInterface
         }
 
         $id = $update['item']['build_id'];
-        if (!$currentStatus = $data['message'][$id]['status'] ?? null) {
-            $dataCurrent = collect($data['message'])->where('name', '=', $update['item']['name']);
-            $id = $dataCurrent->keys()[0] ?? null;
-            $currentStatus = $dataCurrent->value('status');
-        }
         $nextStatus = $update['item']['status'];
-
+        $reset = false;
+        if (!$currentStatus = $data['message'][$id]['status'] ?? null) {
+            $data = $this->updateBuildId($id, $data, $update);
+            $currentStatus = $data['message'][$id]['status'] ?? null;
+            $reset = true;
+        }
         foreach ($data['message'][$id] ?? [] as $k => $item) {
-            if (!StatusHelper::isChange($currentStatus, $nextStatus)) {
+            if (!StatusHelper::isChange($currentStatus, $nextStatus) && !$reset) {
                 continue;
             }
             if (\in_array($k, $updKeys, true)) {
@@ -164,5 +161,33 @@ class PipelineService implements WebhookFactoryInterface
         }
 
         return $data;
+    }
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @param array $update
+     *
+     * @return array
+     */
+    private function updateBuildId(int $id, array $data, array $update): array
+    {
+        $dataCurrent = collect($data['message'])->where('name', '=', $update['item']['name']);
+        $oldId = $dataCurrent->keys()[0] ?? null;
+        $data['message'][$id] = $data['message'][$oldId];
+        unset($data['message'][$oldId]);
+        $data['message'] = $this->sortData($data['message']);
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    private function sortData(array $data = []): array
+    {
+        return collect($data)->sortBy([['sort_num', 'asc'], ['name', 'asc']])->toArray();
     }
 }

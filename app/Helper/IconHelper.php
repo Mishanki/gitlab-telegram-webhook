@@ -11,6 +11,7 @@ class IconHelper
         'failed' => '❌',
         'success' => '✅',
         'skipped' => '🗑️',
+        'clock15' => '🕒',
     ];
 }
 
