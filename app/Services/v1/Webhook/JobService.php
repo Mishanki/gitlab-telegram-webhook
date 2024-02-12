@@ -84,6 +84,7 @@ class JobService implements WebhookFactoryInterface
                 'url' => $body['project']['web_url'].'/builds/'.$body['build_id'],
                 'icon' => IconHelper::ICONS[$body['build_status']] ?? null,
                 'name' => $body['build_name'],
+                'stage' => $body['build_stage'],
                 'status' => $body['build_status'],
                 'duration' => $body['build_duration'],
                 'queued_duration' => $body['build_queued_duration'],
