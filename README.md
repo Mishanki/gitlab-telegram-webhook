@@ -1,5 +1,5 @@
 # Gitlab webhook notifications
-#### Via telegram bot
+#### Gitlab notification via telegram bot
 
 ![title](storage/app/public/example.png)
 
@@ -7,6 +7,11 @@
 ### Create bot
 - Create bot via [@BotFather](https://telegram.me/BotFather) 
 - Invite bot to the channel
+
+## Install
+```bash
+composer create-project larahook/gitlab-notification
+```
 
 ## Run Project
 
@@ -23,7 +28,12 @@ Update config
 TELEGRAM_BOT_HOST=https://api.telegram.org/bot
 TELEGRAM_BOT_TOKEN=bot_id:token
 TELEGRAM_BOT_TIMEOUT=7
-TELEGRAM_HASH_CHAT_IDS=ab487e9d750a3c50876d12e8f381a79f:-1001234567890;some_hash_2:some_chat_id_2
+TELEGRAM_HASH_CHAT_IDS=some_hash_1:-1001234567890;some_hash_2:some_chat_id_2
+
+# Outgoing Rate limiter: 20prm
+RATE_LIMITER_ALLOW=20
+RATE_LIMITER_EVERY_SECONDS=60
+RATE_LIMITER_RELEASE_AFTER_SECONDS=30
 
 # Host settings
 APP_HTTP_PORT=3003
@@ -33,14 +43,10 @@ APP_HTTP_PORT=3003
 ```dockerfile
 docker-compose up -d
 docker exec -it gitlab-notification-app composer install
-```
-
-### Database
-```bash
 docker exec -it gitlab-notification-app php artisan migrate
 ```
 
-## Gitlab
+### Gitlab
 
 #### Allow requests to the local network
 
@@ -53,8 +59,9 @@ docker exec -it gitlab-notification-app php artisan migrate
 
 - Settings ->  Webhooks  ->  Add new webhook
 
+###### Webhook url example
+```
+http://host:3003/api/v1/webhook/some_hash_1
+```
+
 ![title](storage/app/public/webhook.png)
-
-
-- URL hash **ab487e9d750a3c50876d12e8f381a79f** from .env TELEGRAM_HASH_CHAT_IDS
-- PORT can be set in .env APP_HTTP_PORT
