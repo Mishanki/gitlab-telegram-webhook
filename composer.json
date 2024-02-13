@@ -2,7 +2,13 @@
     "name": "larahook/gitlab-notification",
     "type": "project",
     "description": "Webhook gitlab notification via telegram bot",
-    "keywords": ["laravel", "gitlab", "telegram", "webhook", "notification", "events"],
+    "keywords": ["laravel", "gitlab", "telegram", "bot", "webhook", "notification", "events", "pipeline", "job", "commit", "push", "event"],
+    "authors": [
+        {
+            "name": "Mikhail Mishankin",
+            "email": "mishanki@yandex.ru"
+        }
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.1",
