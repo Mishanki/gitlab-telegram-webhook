@@ -3,17 +3,12 @@
 
 ![title](storage/app/public/example.png)
 
-## Telegram
-### Create bot
-- Create bot via [@BotFather](https://telegram.me/BotFather) 
-- Invite bot to the channel
-
 ## Install
 ```bash
 composer create-project larahook/gitlab-notification
 ```
 
-## Run Project
+## Run project
 
 ### Add channel and bot props to project .env file
 
@@ -59,9 +54,7 @@ docker exec -it gitlab-notification-app php artisan migrate
 
 - Settings ->  Webhooks  ->  Add new webhook
 
-###### Webhook url example
+Webhook URL example
 ```
 http://host:3003/api/v1/webhook/some_hash_1
 ```
-
-![title](storage/app/public/webhook.png)
