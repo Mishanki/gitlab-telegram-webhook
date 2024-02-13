@@ -1,7 +1,7 @@
 # Gitlab webhook notifications
 #### Gitlab notification via telegram bot
 
-![title](storage/app/public/example.png)
+![example](storage/app/public/example.png)
 
 ## Install
 ```bash
@@ -58,3 +58,5 @@ Webhook URL example
 ```
 http://host:3003/api/v1/webhook/some_hash_1
 ```
+
+![webhook](storage/app/public/webhook.png)
