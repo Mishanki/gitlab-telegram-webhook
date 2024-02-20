@@ -10,7 +10,7 @@
 ⚙️ <b>{{$count}}</b> new {{$noun}} to 🦊 <b>{{$project['path_with_namespace']}}:<code>{{$branch}}</code></b>
 
 @foreach($commits as $commit)
-<b>{{$commit['author']['name']}}</b>: <a href="{{$commit['url']}}">{{substr($commit['id'], -7)}}</a>: {{$commit['message']}}
+<b>{{$commit['author']['name']}}</b> <a href="{{$commit['url']}}">{{substr($commit['id'], 0, 8)}}</a>: {{$commit['message']}}
 @endforeach
 
 👤 Pushed by : <b>{{$user_name}}</b>
