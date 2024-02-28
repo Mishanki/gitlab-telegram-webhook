@@ -43,23 +43,23 @@ class TelegramHTTPService implements TelegramHTTPServiceInterface
      * @param string $text
      *
      * @return null|array
+     *
      * @throws InvalidArgumentException
      */
     public function editMessage(int $chatId, int $messageId, string $text): ?array
     {
-        if (\Cache::get($chatId.'_'.$messageId) == $text) {
+        if (!$this->isUniqueSend($chatId, $messageId, $text)) {
             return null;
         }
-        \Cache::set($chatId.'_'.$messageId, $text, 60 * 5);
 
         try {
             $response = $this->http->editMessage($chatId, $messageId, $text)->json();
         } catch (\Throwable $e) {
             throw new BadRequestException(TelegramLogHelper::hideBotInfo($e->getMessage()), Errors::TELEGRAM_REQUEST_EXCEPTION->value);
         }
-
         if (!($response['ok'] ?? false)) {
-            throw new ApplicationException('Telegram response error: '.$response['description'] ?? null, Errors::TELEGRAM_RESPONSE_ERROR->value);
+            $description = $response['description'] ?? null;
+            throw new ApplicationException('Telegram response error: '.$description, Errors::TELEGRAM_RESPONSE_ERROR->value);
         }
 
         return $response['result'] ?? null;
@@ -73,5 +73,24 @@ class TelegramHTTPService implements TelegramHTTPServiceInterface
     public function getUpdates(?int $chatId = null): array
     {
         return $this->http->getUpdates($chatId)->json();
+    }
+
+    /**
+     * @param int $chatId
+     * @param int $messageId
+     * @param string $text
+     *
+     * @return bool
+     *
+     * @throws InvalidArgumentException
+     */
+    private function isUniqueSend(int $chatId, int $messageId, string $text): bool
+    {
+        if (\Cache::get($chatId.'_'.$messageId) == md5($text)) {
+            return false;
+        }
+        \Cache::set($chatId.'_'.$messageId, md5($text), 60 * 5);
+
+        return true;
     }
 }

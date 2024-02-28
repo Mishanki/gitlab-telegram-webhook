@@ -42,7 +42,7 @@ services:
         dockerfile: _docker/local/app/Dockerfile
    container_name: gitlab-notification-queue
    hostname: telegram-gitlab-queue
-   command: php artisan queue:listen database --queue=${QUEUE_NAME:-default} --timeout=1800 --tries=${QUEUE_TRIES:-3} --delay=${QUEUE_DELAY:-3}
+   command: php artisan queue:listen database --queue=${QUEUE_NAME:-default} --timeout=1800 --tries=${QUEUE_TRIES:-10} --delay=${QUEUE_DELAY:-3}
    restart: always
    volumes:
     - ./:/var/www
