@@ -160,6 +160,8 @@ class PipelineService implements WebhookFactoryInterface
             }
         }
 
+        $data['message'] = $this->sortData($data['message']);
+
         return $data;
     }
 
