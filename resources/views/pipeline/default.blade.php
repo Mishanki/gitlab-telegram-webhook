@@ -10,7 +10,7 @@
 @endforeach
 
 @foreach($message as $id => $item)
-@if (!empty($item['total_duration']) > 0 && count($message) > 1)
+@if (!empty($item['total_duration']) > 0 && count($message) >= 1)
 {{\App\Helper\IconHelper::ICONS['clock15']}} Pipeline duration: {{\Carbon\CarbonInterval::seconds($item['total_duration'])->cascade()->forHumans(short:true)}}
 @break
 @endif
