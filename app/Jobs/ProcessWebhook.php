@@ -35,6 +35,7 @@ class ProcessWebhook implements ShouldQueue
     public function middleware(): array
     {
         $rateLimitedMiddleware = (new RateLimited(true))
+            ->key('rate-limiter-key:'.$this->entity->getChatId())
             ->allow(env('RATE_LIMITER_ALLOW', 20))
             ->everySeconds(env('RATE_LIMITER_EVERY_SECONDS', 60))
             ->releaseAfterSeconds(env('RATE_LIMITER_RELEASE_AFTER_SECONDS', 30))
